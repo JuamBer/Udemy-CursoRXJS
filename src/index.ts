@@ -1,4 +1,4 @@
-import { Observable, Observer } from "rxjs";
+import { Observable, Observer, Subscription } from "rxjs";
 
 const observer: Observer<string> = {
     next: (res) => console.log("next: ", res),
@@ -8,9 +8,20 @@ const observer: Observer<string> = {
 
 const intervalo$: Observable<number> = new Observable<number>(susb=>{
     let contador: number = 0;
-    setInterval(()=>{
+    const interval = setInterval(()=>{
         susb.next(contador);
         contador++;
-    },1000)
+    },1000);
+
+    return () => {
+        clearInterval(interval);
+        console.log("Intervalo Destruido");
+    }
 });
-intervalo$.subscribe(console.log)
+const intervaloSuscription1: Subscription = intervalo$.subscribe(console.log)
+const intervaloSuscription2: Subscription = intervalo$.subscribe(console.log)
+
+setTimeout(()=>{
+    intervaloSuscription1.unsubscribe();
+    intervaloSuscription2.unsubscribe();
+},3000)
