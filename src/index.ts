@@ -1,27 +1,14 @@
-import { Observable, Observer, Subscription } from "rxjs";
+import { Observable, Observer, Subject, Subscription, of } from "rxjs";
 
-const observer: Observer<string> = {
+const observer: Observer<any> = {
     next: (res) => console.log("next: ", res),
     error: (err) => console.warn("error: ", err),
     complete: () => console.info('complete')
 }
 
-const intervalo$: Observable<number> = new Observable<number>(susb=>{
-    let contador: number = 0;
-    const interval = setInterval(()=>{
-        susb.next(contador);
-        contador++;
-    },1000);
+//const obs$ = of(1,2,3,4,5,6,7);
+const obs$ = of([1,2], {a:1,b:2}, function(){}, Promise.resolve(true));
 
-    return () => {
-        clearInterval(interval);
-        console.log("Intervalo Destruido");
-    }
-});
-const intervaloSuscription1: Subscription = intervalo$.subscribe(console.log)
-const intervaloSuscription2: Subscription = intervalo$.subscribe(console.log)
-
-setTimeout(()=>{
-    intervaloSuscription1.unsubscribe();
-    intervaloSuscription2.unsubscribe();
-},3000)
+console.log("Inicio Obs");
+obs$.subscribe(observer);
+console.log("Fin Obs");
